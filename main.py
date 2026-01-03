@@ -321,7 +321,7 @@ class QuizApp:
         self.update_nav_colors()
 
     # --- GAME LOGIC ---
-    def on_file_picked(self, e: ft.FilePickerResultEvent):
+    def on_file_picked(self, e):
         if not e.files: return
         file_path = e.files[0].path
         if not file_path:
@@ -683,5 +683,6 @@ class QuizApp:
 
 def main(page: ft.Page):
     QuizApp(page)
+
 
 ft.app(target=main)
