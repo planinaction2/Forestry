@@ -3,6 +3,7 @@ import pandas as pd
 import random
 import threading
 import time
+import asyncio
 import re
 
 # --- CONFIGURATION & COLORS ---
@@ -150,7 +151,7 @@ class QuizApp:
                 controls=[
                     ft.Icon(ft.Icons.QUIZ, size=80, color=ft.Colors.BLUE),
                     ft.Text("Forestry App 🎓", size=32, weight=ft.FontWeight.BOLD),
-                    ft.Text("Import CSV to Start", color=ft.Colors.GREY),
+                    ft.Text("Tablet Edition", color=ft.Colors.GREY),
                     ft.Container(height=30),
                     
                     ft.ElevatedButton(
@@ -321,7 +322,7 @@ class QuizApp:
         self.update_nav_colors()
 
     # --- GAME LOGIC ---
-    def on_file_picked(self, e):
+    def on_file_picked(self, e: ft.FilePickerResultEvent):
         if not e.files: return
         file_path = e.files[0].path
         if not file_path:
@@ -683,6 +684,5 @@ class QuizApp:
 
 def main(page: ft.Page):
     QuizApp(page)
-
 
 ft.app(target=main)
