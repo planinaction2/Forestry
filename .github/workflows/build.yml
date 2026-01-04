@@ -31,7 +31,7 @@ jobs:
     - name: Build APK
       # "yes |" automatically accepts the Flet SDK download prompt
       run: |
-        yes | flet build apk --verbose 
+        flet build apk --verbose --flutter-install yes
         
     # OPTIONAL: This helps debug if the file is still missing
     - name: List files (Debug)
