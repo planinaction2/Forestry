@@ -5,6 +5,7 @@ import threading
 import time
 import asyncio
 import re
+import io
 
 # --- CONFIGURATION & COLORS ---
 THEME_COLORS = {
@@ -322,20 +323,34 @@ class QuizApp:
         self.update_nav_colors()
 
     # --- GAME LOGIC ---
-    def on_file_picked(self, e: ft.FilePickerResultEvent):
-        if not e.files: return
-        file_path = e.files[0].path
-        if not file_path:
-             self.page.open(ft.SnackBar(ft.Text("Error: Invalid file path.")))
-             return
+    
 
+    def on_file_picked(self, e):
+    # If no file was selected, do nothing
+        if not e.files:
+            return
+
+        file = e.files[0]
+
+    # Try reading file bytes instead of using path (Android compatibility)
         try:
-            self.raw_df = pd.read_csv(file_path) if file_path.endswith(".csv") else pd.read_excel(file_path)
-            # Normalize column names (strip spaces)
+        # Determine file type by extension
+            if file.name.lower().endswith(".csv"):
+                self.raw_df = pd.read_csv(io.BytesIO(file.bytes))
+            else:
+                self.raw_df = pd.read_excel(io.BytesIO(file.bytes))
+
+        # Normalize column names (strip leading/trailing spaces)
             self.raw_df.columns = self.raw_df.columns.str.strip()
+
+        # Proceed with quiz setup
             self.setup_game()
+
         except Exception as ex:
+        # If something fails, show a SnackBar message
             self.page.open(ft.SnackBar(ft.Text(f"Error loading file: {ex}")))
+            self.page.update()
+
 
     def setup_game(self):
         try:
@@ -686,3 +701,4 @@ def main(page: ft.Page):
     QuizApp(page)
 
 ft.app(target=main)
+
